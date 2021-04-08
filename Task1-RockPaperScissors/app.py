@@ -41,11 +41,10 @@ learned_prob_boundary = 0.1
 precision = 4
 
 opponent_last_move = np.random.choice(options, replace=False, p=list(start_prob.values()))
-play_times = 3000
-st = 1
+play_times = 2000
 score = 0
-score_per_iteration = []
-ratio_per_iteration = []
+score_per_round = []
+ratio_per_round = []
 
 for i in range(play_times):
     opponent_new = np.random.choice(options, replace=False,
@@ -54,76 +53,76 @@ for i in range(play_times):
                               p=list(learned_prob[opponent_last_move].values()))
 
     if opponent_new == 'p':
-        if my_new == 's':  # we won
-            ratio_per_iteration.append(1)
+        if my_new == 's':  # when we won
+            ratio_per_round.append(1)
             score += 1
 
             if learned_prob[opponent_last_move][opponent_new] < (1 - learned_prob_boundary) and learned_prob[opponent_last_move]['r'] > learned_prob_boundary:
                 learned_prob[opponent_last_move][opponent_new] += learning_rate
                 learned_prob[opponent_last_move]['r'] -= learning_rate
-        elif my_new == 'r':  # we lost
-            ratio_per_iteration.append(-1)
+        elif my_new == 'r':  # when we lost
+            ratio_per_round.append(-1)
             score -= 1
 
             if learned_prob[opponent_last_move][opponent_new] > learned_prob_boundary and learned_prob[opponent_last_move]['s'] < (1 - learned_prob_boundary):
                 learned_prob[opponent_last_move][opponent_new] -= learning_rate
                 learned_prob[opponent_last_move]['s'] += learning_rate
-        elif my_new == 'p':  # tie
-            ratio_per_iteration.append(0)
+        elif my_new == 'p':  # when we tie
+            ratio_per_round.append(0)
 
             if learned_prob[opponent_last_move][opponent_new] > learned_prob_boundary and learned_prob[opponent_last_move]['s'] < (1 - learned_prob_boundary):
                 learned_prob[opponent_last_move][opponent_new] -= learning_rate
                 learned_prob[opponent_last_move]['s'] += learning_rate
 
     if opponent_new == 's':
-        if my_new == 'r':  # we won
-            ratio_per_iteration.append(1)
+        if my_new == 'r':  # we when we won
+            ratio_per_round.append(1)
             score += 1
 
             if learned_prob[opponent_last_move][opponent_new] < (1 - learned_prob_boundary) and learned_prob[opponent_last_move]['p'] > learned_prob_boundary:
                 learned_prob[opponent_last_move][opponent_new] += learning_rate
                 learned_prob[opponent_last_move]['p'] -= learning_rate
-        elif my_new == 'p':  # we lost
-            ratio_per_iteration.append(-1)
+        elif my_new == 'p':  # when we  lost
+            ratio_per_round.append(-1)
             score -= 1
 
             if learned_prob[opponent_last_move][opponent_new] > learned_prob_boundary and learned_prob[opponent_last_move]['r'] < (1 - learned_prob_boundary):
                 learned_prob[opponent_last_move][opponent_new] -= learning_rate
                 learned_prob[opponent_last_move]['r'] += learning_rate
-        elif my_new == 's':  # tie
-            ratio_per_iteration.append(0)
+        elif my_new == 's':  #When tie
+            ratio_per_round.append(0)
 
             if learned_prob[opponent_last_move][opponent_new] > learned_prob_boundary and learned_prob[opponent_last_move]['r'] < (1 - learned_prob_boundary):
                 learned_prob[opponent_last_move][opponent_new] -= learning_rate
                 learned_prob[opponent_last_move]['r'] += learning_rate
 
     if opponent_new == 'r':
-        if my_new == 'p':  # we won
-            ratio_per_iteration.append(1)
+        if my_new == 'p':  #When we won
+            ratio_per_round.append(1)
             score += 1
 
             if learned_prob[opponent_last_move][opponent_new] < (1 - learned_prob_boundary) and learned_prob[opponent_last_move]['s'] > learned_prob_boundary:
                 learned_prob[opponent_last_move][opponent_new] += learning_rate
                 learned_prob[opponent_last_move]['s'] -= learning_rate
-        elif my_new == 's':  # we lost
-            ratio_per_iteration.append(-1)
+        elif my_new == 's':  #When we lost
+            ratio_per_round.append(-1)
             score -= 1
 
             if learned_prob[opponent_last_move][opponent_new] > learned_prob_boundary and learned_prob[opponent_last_move]['p'] < (1 - learned_prob_boundary):
                 learned_prob[opponent_last_move][opponent_new] -= learning_rate
                 learned_prob[opponent_last_move]['p'] += learning_rate
-        elif my_new == 'r':  # tie
-            ratio_per_iteration.append(0)
+        elif my_new == 'r':  # when we tie
+            ratio_per_round.append(0)
 
             if learned_prob[opponent_last_move][opponent_new] > learned_prob_boundary and learned_prob[opponent_last_move]['p'] < (1 - learned_prob_boundary):
                 learned_prob[opponent_last_move][opponent_new] -= learning_rate
                 learned_prob[opponent_last_move]['p'] += learning_rate
 
-    score_per_iteration.append(score)
+    score_per_round.append(score)
 
 
-plt.plot(ratio_per_iteration)
-plt.plot(score_per_iteration)
+plt.plot(ratio_per_round)
+plt.plot(score_per_round)
 plt.ylabel('score')
-plt.xlabel('iteration')
+plt.xlabel('round')
 plt.show()
